@@ -96,8 +96,8 @@ javadoc {
   options.charSet = documentEncoding
   options.encoding = sourceEncoding
   if (env.DEBUG != null) options.memberLevel = JavadocMemberLevel.PACKAGE
-  options.addStringOption('Xdoclint:none')
-  options.addStringOption('quiet')
+  options.addStringOption('Xdoclint:none','-quiet')
+  if (env.JDK6_HOME != null) executable = file("${env.JDK6_HOME}/bin/javadoc.exe")
   doLast {
     println "INFO: open ${project.docsDir}/javadoc/index.html"
   }
