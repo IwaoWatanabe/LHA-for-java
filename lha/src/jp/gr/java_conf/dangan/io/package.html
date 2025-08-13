@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+<META HTTP-EQUIV="Reply-to" CONTENT="iwao@users.sourceForge.jp">
+<META HTTP-EQUIV="Content-type" CONTENT="text/html;charset=UTF-8">
+<title>jp.gr.java_conf.dangan.io パッケージ</title>
+</head><body>
+
+<p>このパッケージは java.io パッケージによる入出力を支援するクラスを提供する。
+
+<p></p>このパッケージでは以下のような点で java.io パッケージと異なるので注意する事。
+
+<ol>
+<li>read(byte[] buf, int off, int len) や write(byte[] buf, int off, int len) で 
+    off や len で示される範囲が buf の範囲外を含む場合、 
+    範囲チェックを行うのではなく破壊的なアクセスの後 IndexOutOfBoundsException を投げる。 
+    このとき java.io パッケージのクラスと違い 入出力処理を行ってしまうため 
+    メソッド呼び出し前の状態への復旧は不可能である。</li>
+
+<li>mark / reset のサポートは基本的に接続された InputStream に依存する。 
+    markSupported() は接続された InputStream の markSupported の戻り値を返す。 
+    入力クラスがバッファリングしている場合、markSupported() が false を返しても 
+    バッファ内の移動で可能な範囲で reset() 可能であるが、 これは バッファの大きさ＝readLimit という事では無いので注意する事。</li>
+<li>java.io パッケージでは close() 後のアクセス(read(),write() 等)では 主に IOException を投げるが 
+このパッケージでは Exception を投げる (主に NullPointerException を投げる) ので注意する事。</li>
+<li>java.io パッケージでは EndOfStream に達した後のアクセスを伴わないメソッド呼び出し
+ read(new byte[0]), skip(0)の振る舞いは統一されていない (クラスによって 0 を返したり -1 を返したりする) が、 
+ このパッケージでは InputStream の規約に従い、 常に 0 を返すので注意する事。</li>
+</ol>
+
+</body></html>

@@ -1,0 +1,157 @@
+buildscript {
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+dependencies {
+  classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
+  // ↑ ローカルリポジトリに pom/jar を登録することで利用できます
+}}
+
+plugins {
+  // id 'com.github.johnrengelman.shadow' version '5.2.4'
+}
+
+def sourceEncoding = 'utf-8'
+def documentEncoding = 'utf-8'
+def env = System.env
+def gver = gradle.gradleVersion
+def osname = System.getProperty('os.name').toLowerCase()
+def osarch = System.getProperty("os.arch")
+
+allprojects {
+apply plugin: 'java'
+sourceSets.main.java.srcDirs = ['src']
+sourceSets.main.resources.srcDirs = ['resources']
+sourceSets.test.java.srcDirs = ['test']
+if (gver < '5.0') {
+  sourceSets.main.output.classesDir = 'build/classes'
+  sourceSets.main.output.resourcesDir = 'build/resources'
+  sourceSets.test.output.classesDir = 'build/test-classes'
+  sourceSets.test.output.resourcesDir = 'build/test-resources'
+}
+repositories {
+  mavenLocal()
+  maven {
+    url "https://plugins.gradle.org/m2/"
+  }    
+  mavenCentral()
+//    jcenter()
+}
+tasks.withType(JavaCompile) {
+  // options.compilerArgs << '-Xlint:unchecked,divzero'
+  options.deprecation = false
+  options.encoding = sourceEncoding
+  doFirst {
+    if (sourceCompatibility == '1.6' && env.JRE4_HOME != null) {
+        options.fork = true
+        if (gver < '5.0')
+          options.bootClasspath = "${env.JRE6_HOME}/lib/rt.jar"
+        else
+          options.bootstrapClasspath = files("${env.JRE6_HOME}/lib/rt.jar")
+    }
+    if (sourceCompatibility == '1.5' && env.JRE4_HOME != null) {
+        options.fork = true
+        if (gver < '5.0')
+          options.bootClasspath = "${env.JRE5_HOME}/lib/rt.jar"
+        else
+          options.bootstrapClasspath = files("${env.JRE5_HOME}/lib/rt.jar")
+    }      
+    else if (sourceCompatibility == '1.4' && env.JRE4_HOME != null) {
+        options.fork = true
+        if (gver < '5.0')
+          options.bootClasspath = "${env.JRE4_HOME}/lib/rt.jar"
+        else
+          options.bootstrapClasspath = files("${env.JRE4_HOME}/lib/rt.jar")
+    }
+    else if (sourceCompatibility == '1.3' && targetCompatibility == '1.1' && env.JDK_HOME != null) {
+        options.fork = true
+        if (gver < '5.0')
+          options.bootClasspath = "${env.JDK_HOME}/lib/classes.zip"
+        else
+          options.bootstrapClasspath = files("${env.JDK_HOME}/lib/classes.zip")
+    }
+    else if (sourceCompatibility == '1.2' && env.JRE2_HOME != null) {
+        options.fork = true
+        if (gver < '5.0')
+          options.bootClasspath = "${env.JRE2_HOME}/lib/rt.jar"
+        else
+          options.bootstrapClasspath = files("${env.JRE2_HOME}/lib/rt.jar")
+    }    
+    else if (sourceCompatibility == '1.3' && env.JRE3_HOME != null) {
+        options.fork = true
+        if (gver < '5.0')
+          options.bootClasspath = "${env.JRE3_HOME}/lib/rt.jar"
+        else
+          options.bootstrapClasspath = files("${env.JRE3_HOME}/lib/rt.jar")
+    }
+  }
+}
+javadoc {
+  source = sourceSets.main.allJava
+  classpath = sourceSets.main.compileClasspath
+  options.charSet = documentEncoding
+  options.encoding = sourceEncoding
+  if (env.DEBUG != null) options.memberLevel = JavadocMemberLevel.PACKAGE
+  options.addStringOption('Xdoclint:none')
+  options.addStringOption('quiet')
+  doLast {
+    println "INFO: open ${project.docsDir}/javadoc/index.html"
+  }
+}
+
+
+task zipdoc(type: Zip, dependsOn: javadoc) {
+  description 'javadoc を zipでアーカイブする'
+  // ZIP ファイルを出力するディレクトリ
+  destinationDir = file('../apidocs')
+  classifier = "apidoc-" + new Date().format('yyyy-MMdd')
+  extension = 'zip'
+  from "${project.docsDir}/javadoc"
+  excludes = ['build', '.*']
+  doLast {
+    println "INFO: created: ${archivePath}"
+  }
+}
+
+task copylib(type: Copy) {
+  description '依存するライブラリを収集して lib フォルダに格納する'
+// from (configurations.compile + configurations.testCompile)
+from configurations.compile
+into "lib" 
+}}
+
+subprojects {
+  // sourceCompatibility = 1.6
+}
+
+project(':lha') {
+description 'LHAをJavaで扱うライブラリ'
+sourceCompatibility = '1.2'
+targetCompatibility = '1.1'
+version = '0.06-05'
+dependencies {
+  testCompile 'junit:junit:3.+'
+}}
+
+project(':jLHA') {
+description 'LHAライブラリのコマンドライン(サンプルコード)'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+mainClassName = 'LHA'
+sourceCompatibility = '1.2'
+targetCompatibility = '1.1'
+version = '0.06'
+dependencies {
+  testCompile 'junit:junit:3.+'
+  compile project(':lha')
+}
+jar {
+  manifest {
+      attributes 'Main-Class': mainClassName
+  }
+}}
+
+javadoc {
+  options.source = "1.3"
+}

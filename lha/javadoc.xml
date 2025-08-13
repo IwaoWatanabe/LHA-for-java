@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<project name="jLHA" default="javadoc">
+
+	<!-- properties -->
+	<property name="src.dir"  value="."/>
+	<property name="dest.dir" value="./docs"/>
+	<property name="link.url" value="http://java.sun.com/j2se/1.4/ja/docs/ja/api/"/>
+
+	<!-- targets -->
+    <target name="javadoc">
+        <javadoc sourcepath="${src.dir}"
+                 destdir="${dest.dir}"
+                 version="true"
+                 author="true"
+                 use="true" 
+                 access="package"
+                 splitindex="true" 
+                 nodeprecated="false" 
+                 nodeprecatedlist="false"
+                 noindex="false" 
+                 nonavbar="false" 
+                 notree="false"
+                 packagenames="jp.gr.java_conf.dangan.io,
+                               jp.gr.java_conf.dangan.lang.reflect,
+                               jp.gr.java_conf.dangan.util,
+                               jp.gr.java_conf.dangan.util.lha"
+                 doctitle="LHA Library for Java API ドキュメント"
+                 Windowtitle="LHA Library for Java">
+            <link href="${link.url}" />
+            <Header>
+                    <![CDATA[<small>LHA Library for Java</small>]]>
+            </Header>
+            <bottom>
+                    <![CDATA[<small>バグやドキュメントの誤りの報告は<A href="mailto:cqw10305@nifyt.com">作者宛て</A>にお願いします。<br></small>]]>
+                    <![CDATA[<small>ドキュメント内に含まれる社名、製品名については一般に各社の商標または登録商標です。<br></small>]]>
+                    <![CDATA[<small>Copyright &#169; 2001-2002 Michel Ishizuka. All Rights Reserved.<br></small>]]>
+            </bottom>
+        </javadoc>
+    </target>
+</project>

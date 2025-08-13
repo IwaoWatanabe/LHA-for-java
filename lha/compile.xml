@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<project name="jLHA" default="compileDebug">
+
+	<!-- properties -->
+	<property name="javac.compiler" value="modern"/>
+	<property name="javac.target"   value="1.1"/>
+	<property name="src.dir"        value="."/>
+	<property name="dest.dir"       value="."/>
+
+	<!-- targets -->
+	<target name="compileDebug">
+		<delete>
+			<fileset dir="${dest.dir}" includesfile="${basedir}/lists/classfiles.all.list"/>
+		</delete>
+		<javac compiler="${javac.compiler}"
+			   target="${javac.target}"
+			   srcdir="${src.dir}"
+			   destdir="${dest.dir}"
+		       deprecation="on"
+		       debug="off"
+		       optimize="off">
+			<patternset includesfile="${basedir}/lists/srcfiles.deprecation.list" />
+		</javac>
+		<javac compiler="${javac.compiler}"
+			   target="${javac.target}"
+			   srcdir="${src.dir}"
+			   destdir="${dest.dir}"
+		       deprecation="off"
+		       debug="off"
+		       optimize="off">
+			<patternset includesfile="${basedir}/lists/srcfiles.nodeprecation.list" />
+		</javac>
+	</target>
+
+	<target name="compileRelease">
+		<delete>
+			<fileset dir="${dest.dir}" includesfile="${basedir}/lists/classfiles.all.list"/>
+		</delete>
+		<javac compiler="${javac.compiler}"
+			   target="${javac.target}"
+			   srcdir="${src.dir}"
+			   destdir="${dest.dir}"
+		       deprecation="on"
+		       debug="off"
+		       optimize="on">
+			<patternset includesfile="${basedir}/lists/srcfiles.deprecation.list" />
+		</javac>
+		<javac compiler="${javac.compiler}"
+			   target="${javac.target}"
+			   srcdir="${src.dir}"
+			   destdir="${dest.dir}"
+		       deprecation="off"
+		       debug="off"
+		       optimize="on">
+			<patternset includesfile="${basedir}/lists/srcfiles.nodeprecation.list" />
+		</javac>
+	</target>
+
+</project>

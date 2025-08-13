@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+<META HTTP-EQUIV="Reply-to" CONTENT="iwao@users.sourceForge.jp">
+<META HTTP-EQUIV="Content-type" CONTENT="text/html;charset=UTF-8">
+<title>jp.gr.java_conf.dangan.util.lha パッケージ</title>
+</head><body>
+
+<p>このパッケージは LHA 互換の書庫ファイルの読み込み、書き出しのためのクラスを java.util.zip パッケージと似たようなインターフェイスで提供する。
+
+
+<p>主なクラスの対応関係は以下のとおり。
+
+<table border>
+<tr><th>java.util.zipの
+    <br>主なクラス</th><th>jp.gr.java_conf.dangan.util.lha<br>
+の対応するクラス</th><th>説明</th></tr>
+<tr><td>ZipEntry	<td>{@link LhaHeader}	<td>ファイルの情報を扱う。
+<tr><td>ZipInputStream	<td>{@link LhaInputStream}	<td>書庫ファイルデータを供給する入力ストリームから ファイルデータを解凍して読み込む。
+<tr><td>ZipFile	<td>{@link LhaFile}	<td>書庫ファイルからファイルデータを解凍して読み込む。
+<tr><td>ZipOutputStream <td>{@link LhaOutputStream}		<td>データを書庫ファイルデータへと圧縮しながら 出力ストリームに書き出す。
+</table>
+
+<p>また、LhaOutputStream と似たようなクラスに LhaRetainedOutputStream、 LhaImmediateOutputStream が存在する。 これらのクラスは オリジナルの LHA が本来ストリームを志向して作成されていない、 すなわち</p>
+<pre>(1)仮ヘッダ書き出し
+(2)圧縮データ書き出し
+(3)仮ヘッダ位置に戻って正式ヘッダ書き出し</pre>
+というように書き戻し処理が必要となる形式であるため、 LhaOutputStream では正式ヘッダが確定する(データを全て圧縮する)まで
+ 圧縮データを全て蓄えておくためのバッファ領域を必要としてしまう。
+ LhaRetainedOutputStream と LhaImmediateOutputStream は オリジナルの LHA と同じように
+ 出力先を RandomAccessFile に 限定する事によって LhaOutputStream のようなバッファ領域を必要としない。 
+ LhaRetainedOutputStream と LhaImmediateOutputStream の違いは LHA が扱える全ての圧縮形式では
+ 圧縮サイズがオリジナルサイズを超える(圧縮に失敗する) 可能性があるが、
+ この時オリジナルの LHA と同じように 手動で格納すべきファイルを再度先頭から読み込み、 
+ それを無圧縮で格納しなければならないのが LhaImmediateOutputStream で、
+ その際の処理を自動化しているのが LhaRetainedOutputStream である。
+
+
+</body></html>
