@@ -9,7 +9,9 @@ dependencies {
 }}
 
 plugins {
-  // id 'com.github.johnrengelman.shadow' version '5.2.4'
+  // id 'com.github.johnrengelman.shadow' version '4.0.4'
+  // ↑ 古いJDK向けのプラグインは利用できなくなりました
+  id 'maven-publish'
 }
 
 def sourceEncoding = 'utf-8'
@@ -18,6 +20,7 @@ def env = System.env
 def gver = gradle.gradleVersion
 def osname = System.getProperty('os.name').toLowerCase()
 def osarch = System.getProperty("os.arch")
+def userHome = System.getProperty("user.home")
 
 allprojects {
 apply plugin: 'java'
@@ -132,6 +135,24 @@ targetCompatibility = '1.1'
 version = '0.06-05'
 dependencies {
   testCompile 'junit:junit:3.+'
+}
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+      groupId = 'jp.gr.java_conf.dangan'
+      artifactId = archivesBaseName
+      version = '0.06'
+    }
+  }
+  repositories {
+    maven {
+      name = "localRepo"
+      url = uri("${userHome}/.m2/repository")
+      // url = uri("${buildDir}/repo")
+      // ここをローカルやリモートの Maven リポジトリ URL に変更可能
+    }
+  }
 }}
 
 project(':jLHA') {
